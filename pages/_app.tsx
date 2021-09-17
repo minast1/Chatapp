@@ -7,11 +7,42 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../lib/theme';
 import { AppProps } from 'next/app';
 import { Provider , createStore} from '../lib/authStore';
+import { useStore } from '../lib/sessionStore';
+import { supabase } from '../lib/supabaseClient';
+import router from 'next/router';
+import { AuthSession } from '@supabase/supabase-js'
+import { Box, Container } from '@material-ui/core';
+
 
 
 
  const MyApp: FC<AppProps>  = ({ Component, pageProps }: AppProps) => {
   
+   const Usession = useStore(state => state.Usession);
+   const setSession = useStore(state => state.setSession);
+
+   React.useEffect(() => {
+     const userSession = supabase.auth.session();
+
+     if (!userSession) {
+          router.push('/')
+     } else {
+       setSession(userSession)
+     };
+
+     supabase.auth.onAuthStateChange((_event: string, session: AuthSession | null) => {
+       if (!session) {
+         router.push('/');
+       } else {
+         router.push('/home');
+         setSession(session);
+       }
+      
+     });
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -19,6 +50,19 @@ import { Provider , createStore} from '../lib/authStore';
       jssStyles?.parentElement?.removeChild(jssStyles);
     }
   }, []);
+
+   //Protect the api route 
+   if (pageProps.protected && !Usession) {
+      return (
+        <Container maxWidth="xs" style={{ marginTop: 170 }}>
+          <Box display="flex" justifyContent="center" alignItems="center" mt={10}>
+              <h1>Loading!....</h1>
+          </Box>
+             
+        </Container> 
+      )
+      
+    }
 
    return (
     <Provider createStore={createStore}>
