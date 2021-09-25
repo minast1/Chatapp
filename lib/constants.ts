@@ -5,9 +5,11 @@ export const NEXT_PUBLIC_SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_AN
 
 
 export interface User {
-    id: string | number
+    _id: string | number
     name?: string
-    avatar?: string | number 
+  avatar_url?: string | number
+  phone?: string
+  created_at: string
 }
 
 
@@ -23,4 +25,12 @@ export interface IMessage {
   sent?: boolean
  // received?: boolean
   pending?: boolean
+}
+
+export interface Chat {
+  id: number
+  name: string
+  photo: string
+  user_id: string
+  created_at: string
 }

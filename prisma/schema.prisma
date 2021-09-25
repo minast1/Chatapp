@@ -12,7 +12,7 @@ generator client {
 
 model User {
   id        Int       @id @default(autoincrement())
-  name      String?
+  user_name String?
   email     String?   @unique
   image     String?
   messages  Message[] // A user can have many todos
