@@ -21,9 +21,10 @@ const useStyles = makeStyles((theme) => ({
     root: {
          height: 75,
         backgroundColor: '#101318',
-         paddingLeft: 20
+        paddingLeft: 20,
+        
     },
-    Approot: {flexGrow : 1, minHeight: '100vh'},
+Approot: { },
 
     searchChat: {
         padding: '4px',
@@ -44,13 +45,14 @@ const useStyles = makeStyles((theme) => ({
         padding: 10,
     },
     messages_area: {
-         border: '1px solid #272c35',
+         borderLeft: '1px solid #272c35',
         backgroundImage: 'url(/wa_bg.png)',
         //backgroundRepeat: 'no-repeat',
         backgroundSize: 'inherit',
-        height: theme.spacing(61),
-       // overflowY: 'scroll',
-       // overflowX: 'scroll',
+        height: theme.spacing(64),
+        [theme.breakpoints.down('md')]: {
+            height: theme.spacing(75)
+        } /*increasee height based on breakpoint*/,
         flexGrow: 1,
         /*'&::-webkit-scrollbar': {
             width: '0.5em'
@@ -84,11 +86,7 @@ const useStyles = makeStyles((theme) => ({
         width: '200px',
         height: '200px',
     },
-    divider_background: {
-        backgroundColor: '#ccc',
-        height: '1px',
-        border: 'none'
-    },
+   
     hide_input: {
         display: 'none'
     },
@@ -117,14 +115,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         alignSelf: 'center',
     },
-    bottomappBar: {
-        top: 'auto',
-        bottom: 0,
-    },
-    input: {
-        color: 'lightgray',
-        flex: 0.9
-    },
+    
   chatAvatar: {
          width: theme.spacing(7.0),
       height: theme.spacing(7.0),
@@ -133,10 +124,10 @@ const useStyles = makeStyles((theme) => ({
      // padding: '1px'
     },
     bottomAppbar: {
-         height: 80,
+         height: 70,
         backgroundColor: '#101318',
         paddingLeft: 20,
-         paddingBottom: 27
+         paddingBottom: 5
     }
 
 }));
@@ -147,26 +138,19 @@ const  Chatarea = () => {
 
     const classes = useStyles();
     const currentChat = useStore(state => state.currentChat);
-     
-
-    const inputEl = useRef(null);
-    const [message, setmessage] = useState('')
-   // const { id, messages, participants, owner, name } = chat
-    // console.log(id)
-   
 
     const submitMessage = async() => {
         console.log('message submitted..');
     }
 
-    const getTime = () => {
-         console.log('2days ago');
+    const sanitizeTime = (dateTime: Date) => {
+        return dateTime.toLocaleString
     }
 
     return (
 
-        <div className={classes.Approot}>
-            <Grid container alignItems="center"  className={classes.root}>
+        <div>
+            <Grid container  className={classes.root}>
                 <Grid item container alignItems='center' xs={12}>
                     <Grid item container xs={11} spacing={7} alignItems="center"> {/*  Avatar and Name container*/}
                         <Grid item>

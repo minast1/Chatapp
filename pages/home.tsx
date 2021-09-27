@@ -6,11 +6,10 @@ import { Container, Grid } from '@material-ui/core'
 import Sidearea from '../components/Sidearea'
 import Welcome from '../components/Welcome'
 import { supabase } from '../lib/supabaseClient'
-import { Chat } from '../lib/constants'
 import Chatarea from '../components/Chatarea';
-import { useStore } from '../lib/chatStore'
+import { useStore, Chat } from '../lib/chatStore'
 
-function Home() {
+function Home({userChats}: {userChats: Chat[]}) {
 
   const currentChat = useStore(state => state.currentChat);
     
@@ -19,7 +18,7 @@ function Home() {
             <div style={{maxHeight: '100vh', overflow:'hidden'}}>
                 <Grid container direction="row">
                     <Grid item xs={4}>
-                     <Sidearea />
+            <Sidearea userChats={ userChats} />
                     </Grid>
                     <Grid item xs={8}>
                        {currentChat ? <Chatarea /> : <Welcome/>}
@@ -36,14 +35,16 @@ export default Home
   context: GetStaticPropsContext
 ) => {
     
-    //Get public user and their chats
-   /*  */
-     
+    //Get all chats 
+  
+   let { data: chats} = await  supabase.from('chats').select('*');
+       
   return {
     props: {
       protected: true,
+      userChats: chats
     },
-    //revalidate: 5
+    revalidate: 10
   }
 } 
 

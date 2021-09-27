@@ -3,6 +3,7 @@ import { makeStyles, withStyles,createStyles, Theme } from '@material-ui/core/st
 import { Avatar, Divider, List, ListItemAvatar, ListItemIcon, ListItemText,ListItem, Typography } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useStore } from '../lib/chatStore';
+import moment from 'moment';
 
 
 export type AppProps = {
@@ -55,7 +56,12 @@ const ChatItem = ({id, image, name, text, date }: AppProps) => {
     const setCurrentChat = useStore(state => state.setCurrentChat);
     const classes = useStyles(ishovered);
     
+    const sanitizeTime = (dateTime:  string) => {
 
+        return moment(dateTime).calendar();
+      }
+      
+    
     return (
         
                     <>
@@ -87,7 +93,7 @@ const ChatItem = ({id, image, name, text, date }: AppProps) => {
                                  />
                             <ListItemIcon style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 <Typography variant='caption' style={{ color: 'darkgray' }}>
-                                    {date}
+                                    {sanitizeTime(date)}
                                 </Typography>
                                 <KeyboardArrowDownIcon className={classes.iconDisplay} />
                             </ListItemIcon>

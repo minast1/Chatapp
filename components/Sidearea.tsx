@@ -81,31 +81,14 @@ const getChatProfileImage = () => {
 
 
 
-export default function Sidearea() {
-    const [userChats, setChats] = useState<Chat[] | []>([]);
-     
-    const id = supabase.auth.user()?.id;
-    
-    const getUserChats = async () => {
-         let { data: chats} = await  supabase
-         .from('chats')
-             .select('*')
-           .eq('user_id', id);
-        if (chats) setChats(chats);
-    }
 
-     React.useEffect(() => {
-      getUserChats();
-
-      return () => {
-        getUserChats()
-      }
-    }, [])
-    // console.log(data)
+export default function Sidearea({userChats} : {userChats: Chat[]}) {
+ 
     const [selectedIndex, setselectedIndex] = useState(null);
     const hadleListItemClick = (index:number) => {
         //setselectedIndex(index)
     }
+
 
     const classes = useStyles();
 
@@ -135,14 +118,20 @@ export default function Sidearea() {
                             
                     </Grid>
                 </Grid>
-                <Grid item style={{ paddingLeft: 13, paddingTop: 10 , paddingRight: 13}} container>
-                    <SearchBar
+                <Grid item  container xs={12}>
+                    <Grid item xs={11} style={{ paddingLeft: 13, paddingTop: 10}}>
+                        <SearchBar
                         onRequestSearch={() => console.log('Searching...')}
                         onChange={() => console.log('ive been clicked!')}
                         value=""
                         
                         className={classes.searchChat}
                     />
+                    </Grid>
+                    <Grid item container justifyContent='flex-end' xs >
+                        <Divider orientation="vertical" flexItem/>
+                    </Grid>
+                    
                 </Grid>
                 <Grid item xs={12} style={{paddingTop: 10}}>
                     <Divider/>
