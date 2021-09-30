@@ -6,7 +6,8 @@ export type Chat = {
     id: number
     name: string
     photo?: string
-    createdAt: string 
+  createdAt: string
+    messages:Message[] | []
 }
 
 export type Message = {

@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react'
-import { GetStaticProps, GetStaticPropsContext } from 'next'
-import { makeStyles } from '@material-ui/core/styles'
-import { Container, Grid } from '@material-ui/core'
+import React from 'react'
+import { GetStaticProps, GetStaticPropsContext } from 'next';
+import { Grid } from '@material-ui/core'
 import Sidearea from '../components/Sidearea'
 import Welcome from '../components/Welcome'
 import { supabase } from '../lib/supabaseClient'
@@ -10,7 +9,7 @@ import Chatarea from '../components/Chatarea';
 import { useStore, Chat } from '../lib/chatStore'
 
 function Home({userChats}: {userChats: Chat[]}) {
-
+     //console.log(userChats); 
   const currentChat = useStore(state => state.currentChat);
     
     return (
@@ -36,15 +35,15 @@ export default Home
 ) => {
     
     //Get all chats 
-  
-   let { data: chats} = await  supabase.from('chats').select('*');
+   let { data: chats } = await supabase.from('chats').select(` * ,
+    messages (*)`);
        
   return {
     props: {
       protected: true,
       userChats: chats
     },
-    revalidate: 10
+    revalidate: 1
   }
 } 
 

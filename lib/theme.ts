@@ -34,7 +34,11 @@ const theme = createTheme({
             },
             button: {
                 '&:hover': {
-                    backgroundColor: '#1f232a'
+                    backgroundColor: '#1f232a',
+                    '& $MuiListItemSecondaryAction.root': {
+                        display: 'none'
+                    }
+                    
                 }
             }
 
@@ -70,6 +74,15 @@ const theme = createTheme({
                 color: 'gray'
             }
         },
+        MuiListItemSecondaryAction: {
+            root: {
+                display: 'none',
+                color: 'gray'
+                /*'&:hover': {
+                    display: 'flex'
+                }*/
+            }
+        }
       
     },
 

@@ -1,5 +1,6 @@
-import { Avatar, Box, ButtonBase, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
-import React, { useState, useEffect, useRef } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Avatar, Box, Grid, makeStyles, Typography } from '@material-ui/core';
+import React, { useState} from 'react'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MoodIcon from '@material-ui/icons/Mood';
 import MicIcon from '@material-ui/icons/Mic';
@@ -7,13 +8,12 @@ import SendIcon from '@material-ui/icons/Send';
 import AttachFileSharpIcon from '@material-ui/icons/AttachFileSharp';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
-import MessageBox from './MessageBox';
-import Welcome from './Welcome';
 import { useStore } from '../lib/chatStore';
 import SearchBar from "material-ui-search-bar";
 import IconButton from '@material-ui/core/IconButton';
-
-
+import SenderMessageBox from './SenderMessageBox';
+import RecieverMessageBox from './RecieverMessageBox';
+import { supabase } from '../lib/supabaseClient';
 
 
 
@@ -24,18 +24,13 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: 20,
         
     },
-Approot: { },
 
     searchChat: {
         padding: '4px',
 
         marginTop: theme.spacing(1),
-        //marginLeft: theme.spacing(2),
-        // marginRight: theme.spacing(2),
-        // marginBottom: theme.spacing(1),
         display: 'flex',
         alignItems: 'center',
-        //width: 400,
         height: 45,
         borderRadius: '30px',
         flexGrow: 1,
@@ -47,7 +42,10 @@ Approot: { },
     messages_area: {
          borderLeft: '1px solid #272c35',
         backgroundImage: 'url(/wa_bg.png)',
-        //backgroundRepeat: 'no-repeat',
+        paddingLeft: 80,
+        paddingRight: 70,
+        paddingTop: 10,
+        paddingBottom: 20 ,
         backgroundSize: 'inherit',
         height: theme.spacing(64),
         [theme.breakpoints.down('md')]: {
@@ -66,62 +64,14 @@ Approot: { },
             //outline: '1px solid slategrey'
         }*/
     },
-    no_messages_area: {
-        height: theme.spacing(70)
-    },
 
-    reciever_background: {
-        backgroundColor: '#009688',
-    },
-
-    sender_background: {
-        backgroundColor: '#1f232a'
-    },
-    hover_effect: {
-        '&:hover': {
-            cursor: 'pointer'
-        }
-    },
-    large_avatar: {
-        width: '200px',
-        height: '200px',
-    },
-   
     hide_input: {
         display: 'none'
     },
-    menuButton: {
-        //marginRight: theme.spacing(0.5),
-    },
-    toolbar: {
-
-        '& .MuiListItemText-primary': {
-            fontWeight: 'bold',
-            color: 'white'
-        },
-        "& .MuiListItemText-secondary": {
-            color: 'white',
-            [theme.breakpoints.down('xs')]: {
-                display: 'none'
-            }
-        }
-    },
-    messageBox: {
-        [theme.breakpoints.down('xs')]: {
-            margin: '3px'
-        }
-    },
-    title: {
-        flexGrow: 1,
-        alignSelf: 'center',
-    },
-    
+   
   chatAvatar: {
          width: theme.spacing(7.0),
       height: theme.spacing(7.0),
-    },
-    iconContainer: {
-     // padding: '1px'
     },
     bottomAppbar: {
          height: 70,
@@ -138,15 +88,48 @@ const  Chatarea = () => {
 
     const classes = useStyles();
     const currentChat = useStore(state => state.currentChat);
+    const setCurrentChat = useStore(state => state.setCurrentChat);
+    const [message, setMessage] = useState<string>('');
+    const user = supabase.auth.user();
+    
+    const refetchCurrentChatForUpdatedMessages = async () => {
 
-    const submitMessage = async() => {
-        console.log('message submitted..');
+        const { data: chat } = await supabase.from('chats').select(` * ,
+    messages (*)`).eq('id', currentChat?.id).single();
+        chat && setCurrentChat({
+                          id: chat.id,
+                        name: chat.name,
+                        photo: chat.photo,
+                        createdAt: chat.createdAt,
+                        messages: chat.messages});
     }
 
-    const sanitizeTime = (dateTime: Date) => {
-        return dateTime.toLocaleString
+    React.useEffect(() => {
+        refetchCurrentChatForUpdatedMessages();
+        const mySubscription = supabase.from('messages')
+            .on('INSERT', () => refetchCurrentChatForUpdatedMessages()).subscribe()
+        return () => { supabase.removeSubscription(mySubscription)
     }
+    }, []);
 
+
+    const sendMessge = async () => {
+         
+        const { data, error } = await supabase
+            .from('messages')
+            .insert([
+                {
+                    chatId: currentChat?.id,
+                    text: message,
+                    userId: /*'cccde327-56fc-4624-a4a1-880abc20daa9'*/'fd6acfe8-31d5-41a2-9194-c24d25490d41',
+                    pending: true ,
+                },
+            ]);
+        data && setMessage('');
+    };
+    
+    const recordMessage = () => console.log('Make new voice note');
+    //console.log(message);
     return (
 
         <div>
@@ -180,12 +163,27 @@ const  Chatarea = () => {
                 </Grid>
                  
             </Grid>
-            <Grid  container direction="column" xs={12} className={classes.messages_area}>    {/** Messages area */}
-                <Grid item> message 1</Grid>
-                <Grid item> message 2</Grid>
+            <Grid  container  className={classes.messages_area}>    {/** Messages area */}
+                <Grid item container direction="column-reverse" alignItems="flex-end">
+                    {
+                        currentChat?.messages?.map((el) => {
+                            return (
+                         el.userId == user?.id ? 
+                                    <Grid item key={el._id } style={{marginTop: 17, marginRight: 'auto'}}>
+                        <SenderMessageBox message={el}/>
+                    </Grid>
+                    :  <Grid item style={{marginTop: 17}} key={el._id}>
+                        <RecieverMessageBox message={el }/>
+                    </Grid>
+                        )})
+                    }
+                   
+                    
+                    
+                </Grid>
             </Grid>
             
-            <Grid container xs={12} className={classes.bottomAppbar} alignItems="center">
+            <Grid container className={classes.bottomAppbar} alignItems="center">
                 <Grid item xs> 
                     <IconButton  color="inherit" style={{padding: 0, marginRight: 20}}>
                             <MoodIcon />
@@ -200,16 +198,21 @@ const  Chatarea = () => {
                         onRequestSearch={() => console.log('Searching...')}
                         closeIcon={<ClearIcon style={{ display: 'none', opacity: 0 }} />}
                         searchIcon={<SearchIcon style={{ display: 'none' , opacity: 0 }}/>}
-                        onChange={() => console.log('ive been clicked!')}
-                        value=""
+                        onChange={(newValue) => setMessage(newValue)}
+                        value={message}
                         
                         className={classes.searchChat}
                     />
                 </Grid>
                 <Grid item xs={1} container justifyContent='center'>
                    <Grid item>
-                     <IconButton  color="inherit">
-                            <MicIcon />
+                        <IconButton
+                            color="inherit"
+                            onClick={(event) => {
+                                event.preventDefault();
+                                message.length > 0 ? sendMessge() : recordMessage()
+                            } }>
+                            {message.length > 0 ? <SendIcon /> : <MicIcon />}
                         </IconButton>
                    </Grid>
                 </Grid>

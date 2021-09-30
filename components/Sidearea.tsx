@@ -10,7 +10,7 @@ import SearchBar from "material-ui-search-bar";
 import  Grid  from '@material-ui/core/Grid';
 import ChatItem from './ChatItem';
 import { useStore, Chat } from '../lib/chatStore';
-import { supabase } from '../lib/supabaseClient'
+import logo from '../public/img.jpg';
 
 
 
@@ -58,28 +58,28 @@ const useStyles = makeStyles((theme) => ({
       height: theme.spacing(7),
     },
     list: {
-        maxHeight: '100vh',
+        paddingTop: 0,
+        borderRight: '1px solid #424242',
+        maxHeight: '80vh',
         overflow: 'auto',
           "&::-webkit-scrollbar": {
-          width: '0.4em',
+              width: '0.4em',
+              borderRadius: 0
          },
         "&::-webkit-scrollbar-track": {
           boxShadow: `inset 0 0 6px rgba(0, 0, 0, 0.3)`,
         },
        "&::-webkit-scrollbar-thumb": {
         backgroundColor: theme.palette.primary.main,
-        outline: `1px solid slategrey`,
+        outline: `1px solid #37474f`,
         },
+    },
+    searchGrid: {
+         paddingLeft: 13, paddingTop: 10, paddingRight: 13, borderRight: '1px solid #424242'
     }
    
 
 }));
-
-const getChatProfileImage = () => {
-    return  '/avatar-3.jpg' 
-}
-
-
 
 
 export default function Sidearea({userChats} : {userChats: Chat[]}) {
@@ -97,7 +97,7 @@ export default function Sidearea({userChats} : {userChats: Chat[]}) {
             <Grid container >
                 <Grid item container className={classes.root} alignItems="center">
                     <Grid xs={3} sm={5} md={7} item style={{paddingLeft: 13}}>
-                   <Avatar src='/avatar.jpg' className={ classes.userAvatar}/>
+                        <Avatar src="/static/img.jpg" alt="img" className={ classes.userAvatar}/>
                     </Grid>
                     <Grid item xs={8} sm={7} md={5}container>
                         <Grid item className={classes.appBarIconContainer}>
@@ -118,8 +118,8 @@ export default function Sidearea({userChats} : {userChats: Chat[]}) {
                             
                     </Grid>
                 </Grid>
-                <Grid item  container xs={12}>
-                    <Grid item xs={11} style={{ paddingLeft: 13, paddingTop: 10}}>
+                <Grid item xs={12} className={classes.searchGrid}>
+                   
                         <SearchBar
                         onRequestSearch={() => console.log('Searching...')}
                         onChange={() => console.log('ive been clicked!')}
@@ -127,26 +127,26 @@ export default function Sidearea({userChats} : {userChats: Chat[]}) {
                         
                         className={classes.searchChat}
                     />
-                    </Grid>
-                    <Grid item container justifyContent='flex-end' xs >
-                        <Divider orientation="vertical" flexItem/>
-                    </Grid>
-                    
                 </Grid>
-                <Grid item xs={12} style={{paddingTop: 10}}>
-                    <Divider/>
+
+                <Grid item xs={12} style={{paddingTop : 10, borderRight: '1px solid #424242'}}>
+                  
+                    <Divider />
+        
                 </Grid>
+               
                 <Grid item xs={12}>
-                    <List className={classes.list} style={{}}>
-                        {userChats?.map(({ id, photo, name, createdAt }) => {
+                    <List className={classes.list}>
+                        {userChats?.map(({id, name, photo, createdAt, messages}) => {
                             return (
                                 <ChatItem
-                                key={id}
-                                id={id}    
-                                image={photo}
-                                name={name}
-                               text="fuck yall..."
-                                date={createdAt}
+                                    key={id}
+                                    id={id}
+                                    name={name}
+                                    photo={photo}
+                                    createdAt={createdAt}
+                                    messages={messages}
+                                 
                               //onClick={() => console.log('Ive been clicked!')}
                                 
                             />)
