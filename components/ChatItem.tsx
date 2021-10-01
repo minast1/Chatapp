@@ -40,12 +40,12 @@ const useStyles = makeStyles<Theme, Boolean>(theme => createStyles({
 
 
 
-const ChatItem = ({ id, name, photo, createdAt, messages }: Chat ) => {
+const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
     const [ishovered, setHoverState] = useState<boolean>(false);
     const setCurrentChat = useStore(state => state.setCurrentChat);
     const currentChat = useStore(state => state.currentChat);
     const classes = useStyles(ishovered);
-   // console.log(chat);
+    
     
     const sanitizeTime = (dateTime:  string) => {
 
@@ -68,7 +68,6 @@ const ChatItem = ({ id, name, photo, createdAt, messages }: Chat ) => {
                         name: name,
                         photo: photo,
                         createdAt: createdAt,
-                        messages: messages
                     })}}
                      //selected={false/*selectedIndex === el.id*/}
                     >

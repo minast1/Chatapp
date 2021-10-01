@@ -8,7 +8,7 @@ import SendIcon from '@material-ui/icons/Send';
 import AttachFileSharpIcon from '@material-ui/icons/AttachFileSharp';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
-import { useStore } from '../lib/chatStore';
+import { Message, useStore } from '../lib/chatStore';
 import SearchBar from "material-ui-search-bar";
 import IconButton from '@material-ui/core/IconButton';
 import SenderMessageBox from './SenderMessageBox';
@@ -88,30 +88,24 @@ const  Chatarea = () => {
 
     const classes = useStyles();
     const currentChat = useStore(state => state.currentChat);
-    const setCurrentChat = useStore(state => state.setCurrentChat);
     const [message, setMessage] = useState<string>('');
+    const [currentChatMessages, updateCurrentChatMessages] = useState<Message[] | []>([]);
     const user = supabase.auth.user();
-    
-    const refetchCurrentChatForUpdatedMessages = async () => {
 
-        const { data: chat } = await supabase.from('chats').select(` * ,
-    messages (*)`).eq('id', currentChat?.id).single();
-        chat && setCurrentChat({
-                          id: chat.id,
-                        name: chat.name,
-                        photo: chat.photo,
-                        createdAt: chat.createdAt,
-                        messages: chat.messages});
+    const fetchCurrentChatMessages = async () => {
+        const { data: messages } = await supabase.from('messages').select('*')
+            .eq('chatId', currentChat?.id);
+        messages &&  updateCurrentChatMessages(messages)
     }
+  
 
     React.useEffect(() => {
-        refetchCurrentChatForUpdatedMessages();
+         fetchCurrentChatMessages(); 
         const mySubscription = supabase.from('messages')
-            .on('INSERT', () => refetchCurrentChatForUpdatedMessages()).subscribe()
+            .on('INSERT', () => fetchCurrentChatMessages()).subscribe()
         return () => { supabase.removeSubscription(mySubscription)
     }
-    }, []);
-
+    }, [currentChat,currentChatMessages]);
 
     const sendMessge = async () => {
          
@@ -121,7 +115,7 @@ const  Chatarea = () => {
                 {
                     chatId: currentChat?.id,
                     text: message,
-                    userId: /*'cccde327-56fc-4624-a4a1-880abc20daa9'*/'fd6acfe8-31d5-41a2-9194-c24d25490d41',
+                    userId: 'cccde327-56fc-4624-a4a1-880abc20daa9'/*'fd6acfe8-31d5-41a2-9194-c24d25490d41'*/,
                     pending: true ,
                 },
             ]);
@@ -129,7 +123,7 @@ const  Chatarea = () => {
     };
     
     const recordMessage = () => console.log('Make new voice note');
-    //console.log(message);
+   // console.log(currentChat.messages);
     return (
 
         <div>
@@ -166,19 +160,19 @@ const  Chatarea = () => {
             <Grid  container  className={classes.messages_area}>    {/** Messages area */}
                 <Grid item container direction="column-reverse" alignItems="flex-end">
                     {
-                        currentChat?.messages?.map((el) => {
-                            return (
-                         el.userId == user?.id ? 
-                                    <Grid item key={el._id } style={{marginTop: 17, marginRight: 'auto'}}>
-                        <SenderMessageBox message={el}/>
-                    </Grid>
-                    :  <Grid item style={{marginTop: 17}} key={el._id}>
-                        <RecieverMessageBox message={el }/>
-                    </Grid>
-                        )})
+                        
+                        currentChatMessages.map((el) => {
+                            // return (
+                          return  el.userId == user?.id ?
+                            
+                                <Grid item key={el._id} style={{ marginTop: 17, marginRight: 'auto' }}>
+                                    <SenderMessageBox message={el} />
+                                </Grid>
+                                : <Grid item style={{ marginTop: 17 }} key={el._id}>
+                                    <RecieverMessageBox message={el} />
+                                </Grid>
+                        })
                     }
-                   
-                    
                     
                 </Grid>
             </Grid>
@@ -195,7 +189,7 @@ const  Chatarea = () => {
                 <Grid item xs={10} style={{paddingLeft: 15}}>
                     <SearchBar
                          placeholder="Type a message"
-                        onRequestSearch={() => console.log('Searching...')}
+                       // onRequestSearch={() => console.log('Searching...')}
                         closeIcon={<ClearIcon style={{ display: 'none', opacity: 0 }} />}
                         searchIcon={<SearchIcon style={{ display: 'none' , opacity: 0 }}/>}
                         onChange={(newValue) => setMessage(newValue)}

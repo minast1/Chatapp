@@ -137,7 +137,7 @@ export default function Sidearea({userChats} : {userChats: Chat[]}) {
                
                 <Grid item xs={12}>
                     <List className={classes.list}>
-                        {userChats?.map(({id, name, photo, createdAt, messages}) => {
+                        {userChats?.map(({id, name, photo, createdAt}) => {
                             return (
                                 <ChatItem
                                     key={id}
@@ -145,10 +145,7 @@ export default function Sidearea({userChats} : {userChats: Chat[]}) {
                                     name={name}
                                     photo={photo}
                                     createdAt={createdAt}
-                                    messages={messages}
-                                 
-                              //onClick={() => console.log('Ive been clicked!')}
-                                
+                                   
                             />)
                         })}
                      </List>

@@ -35,15 +35,14 @@ export default Home
 ) => {
     
     //Get all chats 
-   let { data: chats } = await supabase.from('chats').select(` * ,
-    messages (*)`);
+   let { data: chats } = await supabase.from('chats').select('*');
        
   return {
     props: {
       protected: true,
       userChats: chats
     },
-    revalidate: 1
+    //revalidate: 10
   }
 } 
 

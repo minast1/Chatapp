@@ -1,3 +1,4 @@
+import produce from 'immer';
 import create from 'zustand';
 import { persist } from "zustand/middleware";
 
@@ -7,7 +8,6 @@ export type Chat = {
     name: string
     photo?: string
   createdAt: string
-    messages:Message[] | []
 }
 
 export type Message = {
@@ -28,14 +28,13 @@ export type Message = {
 
 type CurrentChatState = {
     currentChat: Chat | null
-    //currentChatMessages: Message[],
-   // setCurrentChatMessages: (id: string) => void
-    setCurrentChat: (chat: Chat) => void 
+  setCurrentChat: (chat: Chat) => void
 }
 
 export const useStore = create<CurrentChatState>(persist(
     (set, get) => ({
-        currentChat: null ,
-        setCurrentChat: (chat) => set(state => ({ currentChat: chat }))
-    }), { name: 'currentChat' }));
+        currentChat: null,
+    setCurrentChat: (chat) => set(state => ({ currentChat: chat })),
+  
+    }), {name : "currentState"}));
 
