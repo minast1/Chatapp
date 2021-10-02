@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import SenderMessageBox from './SenderMessageBox';
 import RecieverMessageBox from './RecieverMessageBox';
 import { supabase } from '../lib/supabaseClient';
+import moment from 'moment';
 
 
 
@@ -97,8 +98,10 @@ const  Chatarea = () => {
             .eq('chatId', currentChat?.id);
         messages &&  updateCurrentChatMessages(messages)
     }
-  
 
+   
+  
+     //console.log();
     React.useEffect(() => {
          fetchCurrentChatMessages(); 
         const mySubscription = supabase.from('messages')

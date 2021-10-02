@@ -13,7 +13,7 @@ export type Chat = {
 export type Message = {
   _id: string | number
   text?: string
-  createdAt: Date | number
+  createdAt: Date | number | string
     userId: string | number
     chatId: number
   image?: string

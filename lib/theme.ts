@@ -35,11 +35,12 @@ const theme = createTheme({
             button: {
                 '&:hover': {
                     backgroundColor: '#1f232a',
-                    '& $MuiListItemSecondaryAction.root': {
-                        display: 'none'
-                    }
-                    
-                }
+                        
+                },
+                 '&$selected': {
+                    backgroundColor: '#1f232a'
+                },
+
             }
 
         },
@@ -53,27 +54,7 @@ const theme = createTheme({
                 fontSize: '14px'
             }
         },
-        MuiToolbar: {
-            root: {
-                minHeight: 35,
-                //height: 45,
-                alignItems: 'center',
-                //paddingTop: theme.spacing(1),
-                paddingBottom: '10px',
-
-            },
-        },
-        MuiAppBar: {
-            root: {
-                height: 57
-            }
-        },
-        MuiButtonBase: {
-            root: {
-                padding: '10px',
-                color: 'gray'
-            }
-        },
+      
         MuiListItemSecondaryAction: {
             root: {
                 display: 'none',

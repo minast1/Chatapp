@@ -60,7 +60,7 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
                      alignItems="flex-start"
                     className={classes.listItem}
                      button
-                     //selected={/*currentChat?.id === chat.id*/ }
+                     selected={currentChat?.id === id}
                       onClick={(event) => {
                      // handleListItemClick(event, 0)
                     setCurrentChat({
