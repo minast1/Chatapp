@@ -35,7 +35,7 @@ export default Home
 ) => {
     
     //Get all chats 
-   let { data: chats } = await supabase.from('chats').select('*');
+   let { data: chats } = await supabase.from<Chat>('chats').select('*');
        
   return {
     props: {

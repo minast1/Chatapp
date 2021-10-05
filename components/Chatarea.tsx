@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Avatar, Box, Grid, makeStyles, Typography } from '@material-ui/core';
-import React, { useState} from 'react'
+import { Avatar, Box, Grid, Grow, makeStyles, Typography } from '@material-ui/core';
+import React, { useState, useRef} from 'react'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MoodIcon from '@material-ui/icons/Mood';
 import MicIcon from '@material-ui/icons/Mic';
@@ -14,16 +14,29 @@ import IconButton from '@material-ui/core/IconButton';
 import SenderMessageBox from './SenderMessageBox';
 import RecieverMessageBox from './RecieverMessageBox';
 import { supabase } from '../lib/supabaseClient';
-import moment from 'moment';
+import PersonIcon from '@material-ui/icons/Person';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import CameraAltIcon from '@material-ui/icons/CameraAlt';
+import PanoramaIcon from '@material-ui/icons/Panorama';
+import { green } from '@material-ui/core/colors';
+import Fade from '@material-ui/core/Fade';
+import Fab from '@material-ui/core/Fab';
+
 
 
 
 const useStyles = makeStyles((theme) => ({
     root: {
-         height: 75,
+        height: 75,
         backgroundColor: '#101318',
         paddingLeft: 20,
         
+    },
+    fab: {
+        position: 'fixed',
+        bottom: theme.spacing(10),
+        paddingLeft: 70
+       // right: theme.spacing(2),
     },
 
     searchChat: {
@@ -41,46 +54,70 @@ const useStyles = makeStyles((theme) => ({
         padding: 10,
     },
     messages_area: {
-         borderLeft: '1px solid #272c35',
+        borderLeft: '1px solid #272c35',
         backgroundImage: 'url(/wa_bg.png)',
         paddingLeft: 80,
         paddingRight: 70,
         paddingTop: 10,
-        paddingBottom: 20 ,
+        paddingBottom: 20,
         backgroundSize: 'inherit',
         height: theme.spacing(64),
         [theme.breakpoints.down('md')]: {
             height: theme.spacing(75)
         } /*increasee height based on breakpoint*/,
         flexGrow: 1,
-        /*'&::-webkit-scrollbar': {
-            width: '0.5em'
-        },
-        '&::-webkit-scrollbar-track': {
-            boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-            webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
-        },
-        '&::-webkit-scrollbar-thumb': {
-            backgroundColor: theme.palette.primary.main,
-            //outline: '1px solid slategrey'
-        }*/
     },
 
-    hide_input: {
+    input: {
         display: 'none'
     },
    
-  chatAvatar: {
-         width: theme.spacing(7.0),
-      height: theme.spacing(7.0),
+    chatAvatar: {
+        width: theme.spacing(7.0),
+        height: theme.spacing(7.0),
     },
     bottomAppbar: {
-         height: 70,
+        height: 70,
         backgroundColor: '#101318',
-        paddingLeft: 20,
-         paddingBottom: 5
+        paddingLeft: 15,
+        paddingBottom: 5
+    },
+    person: {
+       backgroundColor: '#42a5f5',
+        width: theme.spacing(7),
+        height: theme.spacing(7),
+        '&:hover': {
+            cursor: 'pointer'
+        },
+        border: 0
+    },
+    document: {
+        backgroundColor: '#673ab7',
+         '&:hover': {
+            cursor: 'pointer'
+        },
+      width: theme.spacing(7),
+        height: theme.spacing(7),
+        border: 0
+    },
+    camera: {
+        backgroundColor: '#f50057',
+         '&:hover': {
+            cursor: 'pointer'
+        },
+      width: theme.spacing(7),
+        height: theme.spacing(7),
+      border: 0
+    },
+    image: {
+        backgroundColor: '#d500f9',
+         '&:hover': {
+            cursor: 'pointer'
+        },
+      width: theme.spacing(7),
+        height: theme.spacing(7),
+      border: 0
     }
-
 }));
 
 
@@ -92,14 +129,16 @@ const  Chatarea = () => {
     const [message, setMessage] = useState<string>('');
     const [currentChatMessages, updateCurrentChatMessages] = useState<Message[] | []>([]);
     const user = supabase.auth.user();
-
+    const [attachments, toggleAttachments] = useState<boolean>(false);
+    const ref1 = useRef<HTMLInputElement>(null);
+    const ref2 = useRef<HTMLInputElement>(null);
+     const ref3 = useRef<HTMLInputElement>(null);
+    
     const fetchCurrentChatMessages = async () => {
-        const { data: messages } = await supabase.from('messages').select('*')
+        const { data: messages } = await supabase.from<Message>('messages').select('*')
             .eq('chatId', currentChat?.id);
-        messages &&  updateCurrentChatMessages(messages)
-    }
-
-   
+        messages && updateCurrentChatMessages(messages)
+    };
   
      //console.log();
     React.useEffect(() => {
@@ -179,17 +218,80 @@ const  Chatarea = () => {
                     
                 </Grid>
             </Grid>
-            
+            <Fade in={attachments}>
+                
+                <Grid container direction="column" className={classes.fab} spacing={2} >
+                <input
+                accept="image/*"
+                className={classes.input}
+                ref={ref1}
+                multiple
+                type="file"
+                    />
+                    <input
+                accept="image/*"
+                className={classes.input}
+                ref={ref2}
+                multiple
+                type="file"
+                    />
+                    <input
+                accept="image/*"
+                className={classes.input}
+                ref={ref3}
+                multiple
+                type="file"
+            />
+                <Grid item>
+                 <Avatar
+                     component="button"  
+                    className={classes.person}
+                     ><PersonIcon fontSize="large" style={{ color: 'white' }} />
+                 </Avatar>
+                </Grid>
+                    <Grid item>         
+                        <Avatar
+                             onClick={() => ref1.current?.click()}   
+                            component="button"
+                            className={classes.document}><InsertDriveFileIcon
+                                fontSize="large"
+                                style={{ color: 'white' }} />
+                        </Avatar>
+                </Grid>
+                <Grid item>
+            <Avatar component="button" className={classes.camera}><CameraAltIcon fontSize="large" style={{color: 'white'}}/> </Avatar>
+
+                </Grid>
+                <Grid item>
+                        <Avatar
+                            component="button"
+                             onClick={() => ref3.current?.click()}   
+                            className={classes.image}><PanoramaIcon
+                                fontSize="large" style={{ color: 'white' }} />
+                        </Avatar>
+
+                </Grid> 
+                </Grid>
+                </Fade>
+               
+           
             <Grid container className={classes.bottomAppbar} alignItems="center">
-                <Grid item xs> 
-                    <IconButton  color="inherit" style={{padding: 0, marginRight: 20}}>
+                <Grid item  style={{ paddingRight: 0}}>
+                    <IconButton  color="inherit" style={{ marginRight: 10}}>
                             <MoodIcon />
-                        </IconButton>
-                    <IconButton style={{padding:0}}  color="inherit" edge="end" onClick={() => console.log('do nothing')}>
+                    </IconButton>
+                     <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
+                    
+                    <IconButton
+                        onClick={() => toggleAttachments(!attachments)}
+                            color="inherit"
+                            edge="end"
+                            aria-label="upload picture"
+                            component="span">
                             <AttachFileSharpIcon />
                         </IconButton>
                   </Grid>
-                <Grid item xs={10} style={{paddingLeft: 15}}>
+                <Grid item xs={10} style={{paddingLeft:20, paddingRight: 15}}>
                     <SearchBar
                          placeholder="Type a message"
                        // onRequestSearch={() => console.log('Searching...')}
@@ -201,7 +303,7 @@ const  Chatarea = () => {
                         className={classes.searchChat}
                     />
                 </Grid>
-                <Grid item xs={1} container justifyContent='center'>
+                <Grid item xs container justifyContent='center'>
                    <Grid item>
                         <IconButton
                             color="inherit"
