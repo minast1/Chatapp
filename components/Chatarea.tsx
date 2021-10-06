@@ -131,8 +131,9 @@ const  Chatarea = () => {
     const user = supabase.auth.user();
     const [attachments, toggleAttachments] = useState<boolean>(false);
     const ref1 = useRef<HTMLInputElement>(null);
-    const ref2 = useRef<HTMLInputElement>(null);
-     const ref3 = useRef<HTMLInputElement>(null);
+   // const ref2 = useRef<HTMLInputElement>(null);
+    // const ref3 = useRef<HTMLInputElement>(null);
+    const [fileSelected, setFileSelected] = useState<File | null>(null);
     
     const fetchCurrentChatMessages = async () => {
         const { data: messages } = await supabase.from<Message>('messages').select('*')
@@ -140,30 +141,86 @@ const  Chatarea = () => {
         messages && updateCurrentChatMessages(messages)
     };
   
-     //console.log();
+    // console.log(fileSelected);
     React.useEffect(() => {
-         fetchCurrentChatMessages(); 
+        fetchCurrentChatMessages();
         const mySubscription = supabase.from('messages')
             .on('INSERT', () => fetchCurrentChatMessages()).subscribe()
         return () => { supabase.removeSubscription(mySubscription)
     }
-    }, [currentChat,currentChatMessages]);
+    }, [currentChat, currentChatMessages]);
+    
+    const processFile = (): string => {
+        //ONLY ALLOW IMAGE FILES FOR NOW !11
+        const fileExt = fileSelected?.name.split('.').pop();
+        const fileName = `${user?.id}${Math.random()}.${fileExt}`;
+        const filePath = `public/${fileName}`;
+        return filePath;
+    };
 
-    const sendMessge = async () => {
-         
-        const { data, error } = await supabase
+    const sendTextMessage = async (path?:string) => {
+           const { data, error } = await supabase
             .from('messages')
             .insert([
                 {
                     chatId: currentChat?.id,
                     text: message,
                     userId: 'cccde327-56fc-4624-a4a1-880abc20daa9'/*'fd6acfe8-31d5-41a2-9194-c24d25490d41'*/,
-                    pending: true ,
+                    pending: true,
+                    image: path ? path : null 
                 },
             ]);
         data && setMessage('');
     };
+
+    const uploadFile = async (path: string, file: File) => {
+        try {
+            const {error: uploadError} = await supabase.storage.from('message-files').upload(path, file, {
+            cacheControl: '3600',
+            upsert: false
+        });
+        if (uploadError) {
+            throw uploadError
+          }
+        } catch (error) {
+            console.log(error);
+        } 
+     
+    };
+
+    const sendMessge = async () => {
+         //1.Text message  => fileSeclected === null 
+        if (fileSelected === null) {
+            await sendTextMessage();
+        }
+        //2. Text message with file => fileSelected === true && message == true
+        if (fileSelected && message.length > 0) {
+            const processedFilePath = processFile();
+            await uploadFile(processedFilePath, fileSelected);
+            await sendTextMessage(processedFilePath);
+            setFileSelected(null);
+        }
+        //3. File message  => message === ''
+        if (fileSelected && message.length === 0) {
+            const processedFilePath = processFile();
+            await uploadFile(processedFilePath, fileSelected);
+             const { data, error } = await supabase
+            .from('messages')
+            .insert([
+                {
+                    chatId: currentChat?.id,
+                   // text: message,
+                    userId: 'cccde327-56fc-4624-a4a1-880abc20daa9'/*'fd6acfe8-31d5-41a2-9194-c24d25490d41'*/,
+                    pending: true,
+                    image: processedFilePath
+                },
+            ]);
+            data && setMessage('');
+            setFileSelected(null);
+              }
+    };
     
+   
     const recordMessage = () => console.log('Make new voice note');
    // console.log(currentChat.messages);
     return (
@@ -221,27 +278,18 @@ const  Chatarea = () => {
             <Fade in={attachments}>
                 
                 <Grid container direction="column" className={classes.fab} spacing={2} >
-                <input
+                 <input
                 accept="image/*"
                 className={classes.input}
+                        onChange={(e) => {
+                            if (e.target.files) {
+                                setFileSelected(e.target.files[0]);
+                                console.log(fileSelected);
+                            }
+                        }}
                 ref={ref1}
-                multiple
                 type="file"
-                    />
-                    <input
-                accept="image/*"
-                className={classes.input}
-                ref={ref2}
-                multiple
-                type="file"
-                    />
-                    <input
-                accept="image/*"
-                className={classes.input}
-                ref={ref3}
-                multiple
-                type="file"
-            />
+                />
                 <Grid item>
                  <Avatar
                      component="button"  
@@ -265,7 +313,7 @@ const  Chatarea = () => {
                 <Grid item>
                         <Avatar
                             component="button"
-                             onClick={() => ref3.current?.click()}   
+                             onClick={() => ref1.current?.click()}   
                             className={classes.image}><PanoramaIcon
                                 fontSize="large" style={{ color: 'white' }} />
                         </Avatar>
@@ -309,9 +357,9 @@ const  Chatarea = () => {
                             color="inherit"
                             onClick={(event) => {
                                 event.preventDefault();
-                                message.length > 0 ? sendMessge() : recordMessage()
+                                message.length > 0 || fileSelected ? sendMessge() : recordMessage()
                             } }>
-                            {message.length > 0 ? <SendIcon /> : <MicIcon />}
+                            {message.length > 0 || fileSelected ? <SendIcon /> : <MicIcon />}
                         </IconButton>
                    </Grid>
                 </Grid>

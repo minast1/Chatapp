@@ -1,11 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Grid, Box, Typography } from '@material-ui/core'
-import React from 'react'  //'#1f232a'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Message } from '../lib/chatStore';
 import { DateTime } from 'luxon';
 import DoneIcon from '@material-ui/icons/Done';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
+import { supabase } from '../lib/supabaseClient';
 
 
 
@@ -27,15 +29,33 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function RecieverMessageBox({message}: {message: Message | null}) {
-    const classes = useStyles();
-
+function RecieverMessageBox({message}: {message: Message | null}) { 
+   
+      const [messageFile, setMessageFile] = useState<string | null>(null);
      const sanitizeTime = (dateTime: string) => {
          
         let dt = DateTime.fromISO(dateTime);
         return dt.toLocaleString(DateTime.TIME_24_SIMPLE);
         //return moment(dateTime).calendar(); 
      }
+    
+    const downloadImage = async (path:string) => { 
+        try {
+            const { data, error } = await supabase.storage.from('message-files').download(path);
+            if (error) { throw error }
+            const url = URL.createObjectURL(data);
+            setMessageFile(url);
+
+        } catch (error ) {
+             console.log( error);
+        }
+     };
+
+    useEffect(() => {
+        message?.image && downloadImage(message.image)
+       
+    }, [])
+    const classes = useStyles();
     
     return (
        <Box className={classes.root}    width="fit-content">
