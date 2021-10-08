@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     image: {
       //  height: 'fit-content',
       // paddingBottom: 0,
-       //paddingTop: 10
+      // paddingTop: '10px'
         
    }
 }));
@@ -57,34 +57,29 @@ function SenderMessageBox({ message }: { message: Message | null }) {
     useEffect(() => {
         message?.image && downloadImage(message.image)
        
-    }, [])
+    }, [message?.image])
     const classes = useStyles();
     return (
-        <Grid container className={classes.root}>
-            
-            <Grid item xs={12} container direction="column">
-                    {
+        <Box className={classes.root} width="fit-content" display="flex" flexDirection="column">
+            {
                 messageFile &&
-                <Grid style={{marginTop: 10 , position: 'relative' }}>
-                 <Image src={messageFile} width={280} height={330} className={classes.image} alt="alt"/>
-              </Grid>
-                   // <Image src={messageFile} width={250} height={300} alt="msg" className={classes.image} />
-                }
-        
-                <Grid item container alignItems="center" >
-                    <Grid item xs={12}>
-                   <Typography style={{ fontSize: 17, fontWeight: 400, color: 'lightgray'}}>{message?.text }</Typography>
-                    </Grid>
-                    <Grid item container xs={12} justifyContent="flex-end">
-                        <Grid item>
-                        <Typography style={{ fontSize: 12, color: 'lightgray'}}>{sanitizeTime(message?.createdAt as string) } </Typography>
+                <Box  style={{position: 'relative', width: 240, height: 280, marginTop: 7}}>
+                    <Image
+                        src={messageFile}
+                         
+                        alt="msg"
+                        layout="fill"
+                        objectFit="cover"
+                        className={classes.image} />
+                </Box>
+            }
 
-                        </Grid>
-                    </Grid>
-                </Grid>
-    
-            </Grid>     
-       </Grid>
+             <Box display="flex" width={messageFile && 240} flexWrap="wrap">
+                <Typography style={{ fontSize: 15, fontWeight: 400, color: 'lightgray' }}>{message?.text }</Typography>
+                <Typography style={{ fontSize: 13, color: 'lightgray', paddingTop: '10px', paddingLeft: '25px', marginLeft: 'auto' }}
+                >{sanitizeTime(message?.createdAt as string)} </Typography>
+            </Box>
+        </Box>
     )
 }
 

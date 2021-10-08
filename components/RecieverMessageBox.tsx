@@ -13,8 +13,8 @@ import { supabase } from '../lib/supabaseClient';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-       paddingTop: 4,
-        paddingBottom: 1,
+       paddingTop: 3,
+        paddingBottom: 2,
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: 'teal',
@@ -53,18 +53,30 @@ function RecieverMessageBox({message}: {message: Message | null}) {
 
     useEffect(() => {
         message?.image && downloadImage(message.image)
+        
        
-    }, [])
+    }, [message?.image])
     const classes = useStyles();
     
     return (
-       <Box className={classes.root}    width="fit-content">
-            {/*<Image src="/public/vercel.svg" width={30} height={20} alt="msg" className={classes.image} />*/}
-
-            <span style={{ display: 'flex' }}>
-                <Typography style={{ fontSize: 17, fontWeight: 400, color: 'lightgray' }}>{message?.text }</Typography>
-                <Typography style={{ fontSize: 15, color: 'lightgray', paddingTop: '10px', paddingLeft: '25px', marginLeft: 'auto' }}
-                >{sanitizeTime(message?.createdAt as string) } <DoneAllIcon fontSize='inherit' /></Typography></span>
+        <Box className={classes.root} width="fit-content" display="flex" flexDirection="column">
+             {
+                messageFile &&
+                <Box  style={{position: 'relative', width: 240, height: 280, marginTop: 7}}>
+                    <Image
+                        src={messageFile}
+                         
+                        alt="msg"
+                        layout="fill"
+                        objectFit="cover"
+                        className={classes.image} />
+                </Box>
+            }
+             <Box display="flex" width={messageFile && 240} flexWrap="wrap">
+                <Typography style={{ fontSize: 15, fontWeight: 400, color: 'lightgray' }}>{message?.text }</Typography>
+                 <Typography style={{ fontSize: 13, color: 'lightgray', paddingTop: '10px', paddingLeft: '25px', marginLeft: 'auto' }}
+                >{sanitizeTime(message?.createdAt as string)} <DoneAllIcon fontSize='inherit' /></Typography>
+            </Box>
         </Box>
     )
 }

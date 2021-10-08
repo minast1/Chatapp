@@ -167,7 +167,7 @@ const  Chatarea = () => {
                 {
                     chatId: currentChat?.id,
                     text: message,
-                    userId: 'cccde327-56fc-4624-a4a1-880abc20daa9'/*'fd6acfe8-31d5-41a2-9194-c24d25490d41'*/,
+                    userId: user?.id,
                     pending: true,
                     image: path ? path : null 
                 },
