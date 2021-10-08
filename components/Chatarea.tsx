@@ -66,6 +66,8 @@ const useStyles = makeStyles((theme) => ({
             height: theme.spacing(75)
         } /*increasee height based on breakpoint*/,
         flexGrow: 1,
+          maxHeight: '80vh',
+        overflow: 'auto',
     },
 
     input: {
@@ -264,7 +266,7 @@ const  Chatarea = () => {
                             // return (
                           return  el.userId == user?.id ?
                             
-                                <Grid item key={el._id} style={{ marginTop: 17, marginRight: 'auto' }}>
+                                <Grid item key={el._id} style={{ marginTop: 17, marginRight: 'auto' }} >
                                     <SenderMessageBox message={el} />
                                 </Grid>
                                 : <Grid item style={{ marginTop: 17 }} key={el._id}>

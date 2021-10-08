@@ -12,7 +12,7 @@ import { supabase } from '../lib/supabaseClient';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        paddingTop: 4,
+       paddingTop: 3,
         paddingBottom: 2,
         paddingLeft: 10,
         paddingRight: 10,
@@ -24,9 +24,10 @@ const useStyles = makeStyles((theme) => ({
         
     },
     image: {
-       //display: 'none'
-       paddingBottom: 0,
-       marginBottom: 0
+      //  height: 'fit-content',
+      // paddingBottom: 0,
+       //paddingTop: 10
+        
    }
 }));
 
@@ -59,17 +60,31 @@ function SenderMessageBox({ message }: { message: Message | null }) {
     }, [])
     const classes = useStyles();
     return (
-        <Box className={classes.root} width="fit-content">
-            {
+        <Grid container className={classes.root}>
+            
+            <Grid item xs={12} container direction="column">
+                    {
                 messageFile &&
-                <Image src={messageFile} width={180} height={200} alt="msg" className={classes.image} />
-            }
+                <Grid style={{marginTop: 10 , position: 'relative' }}>
+                 <Image src={messageFile} width={280} height={330} className={classes.image} alt="alt"/>
+              </Grid>
+                   // <Image src={messageFile} width={250} height={300} alt="msg" className={classes.image} />
+                }
+        
+                <Grid item container alignItems="center" >
+                    <Grid item xs={12}>
+                   <Typography style={{ fontSize: 17, fontWeight: 400, color: 'lightgray'}}>{message?.text }</Typography>
+                    </Grid>
+                    <Grid item container xs={12} justifyContent="flex-end">
+                        <Grid item>
+                        <Typography style={{ fontSize: 12, color: 'lightgray'}}>{sanitizeTime(message?.createdAt as string) } </Typography>
 
-            <span style={{ display: 'flex' }}>
-                <Typography style={{ fontSize: 17, fontWeight: 400, color: 'lightgray',}}>{message?.text }</Typography>
-                <Typography style={{ fontSize: 15, color: 'lightgray', paddingTop: '10px', paddingLeft: '25px', marginLeft: 'auto' }}
-                >{sanitizeTime(message?.createdAt as string) }</Typography></span>
-        </Box>
+                        </Grid>
+                    </Grid>
+                </Grid>
+    
+            </Grid>     
+       </Grid>
     )
 }
 
