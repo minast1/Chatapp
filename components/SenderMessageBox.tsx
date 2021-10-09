@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Grid, Box, Typography } from '@material-ui/core'
+import { Grid, Box, Typography, Theme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -10,12 +10,12 @@ import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { supabase } from '../lib/supabaseClient';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme , Message>((theme) => ({
     root: {
-       paddingTop: 3,
+       paddingTop: ({image}) =>  image ? 3 : 7,
         paddingBottom: 2,
-        paddingLeft: 10,
-        paddingRight: 10,
+        paddingLeft:  ({image}) =>  image ? 5 : 10,
+        paddingRight: ({image}) =>  image ? 5 : 10,
         backgroundColor: '#1f232a',
         borderRadius: 11,
         borderTopRightRadius: 0 ,
@@ -23,16 +23,17 @@ const useStyles = makeStyles((theme) => ({
        // borderTopLeftRadius: 0
         
     },
-    image: {
-      //  height: 'fit-content',
-      // paddingBottom: 0,
-      // paddingTop: '10px'
-        
+     image: {
+        position: 'relative',
+        width: 240,
+        height: 280,
+        marginTop: 2,
+
    }
 }));
 
 
-function SenderMessageBox({ message }: { message: Message | null }) {
+function SenderMessageBox({ message }: { message: Message  }) {
 
       const [messageFile, setMessageFile] = useState<string | null>(null);
      const sanitizeTime = (dateTime: string) => {
@@ -58,19 +59,18 @@ function SenderMessageBox({ message }: { message: Message | null }) {
         message?.image && downloadImage(message.image)
        
     }, [message?.image])
-    const classes = useStyles();
+    const classes = useStyles(message);
     return (
         <Box className={classes.root} width="fit-content" display="flex" flexDirection="column">
             {
                 messageFile &&
-                <Box  style={{position: 'relative', width: 240, height: 280, marginTop: 7}}>
+                <Box className={classes.image}>
                     <Image
                         src={messageFile}
-                         
                         alt="msg"
                         layout="fill"
                         objectFit="cover"
-                        className={classes.image} />
+                     />
                 </Box>
             }
 

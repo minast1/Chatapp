@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Grid, Box, Typography } from '@material-ui/core'
+import { Grid, Box, Typography, Theme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -11,12 +11,12 @@ import { supabase } from '../lib/supabaseClient';
 
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme, Message>((theme) => ({
     root: {
-       paddingTop: 3,
+       paddingTop: ({image}) =>  image ? 3 : 7,
         paddingBottom: 2,
-        paddingLeft: 10,
-        paddingRight: 10,
+        paddingLeft:  ({image}) =>  image ? 5 : 10,
+        paddingRight: ({image}) =>  image ? 5 : 10,
         backgroundColor: 'teal',
         borderRadius: 11,
         borderTopRightRadius: 0 ,
@@ -24,52 +24,57 @@ const useStyles = makeStyles((theme) => ({
         
     },
     image: {
-       display: 'none'
+        position: 'relative',
+        width: 240,
+        height: 280,
+        marginTop: 2,
+
    }
 }));
 
 
-function RecieverMessageBox({message}: {message: Message | null}) { 
+function RecieverMessageBox({ message }: { message: Message }) {
    
-      const [messageFile, setMessageFile] = useState<string | null>(null);
-     const sanitizeTime = (dateTime: string) => {
+    const [messageFile, setMessageFile] = useState<string | null>(null);
+    const sanitizeTime = (dateTime: string) => {
          
         let dt = DateTime.fromISO(dateTime);
         return dt.toLocaleString(DateTime.TIME_24_SIMPLE);
         //return moment(dateTime).calendar(); 
-     }
+    }
     
-    const downloadImage = async (path:string) => { 
+    const downloadImage = async (path: string) => {
         try {
             const { data, error } = await supabase.storage.from('message-files').download(path);
             if (error) { throw error }
             const url = URL.createObjectURL(data);
             setMessageFile(url);
 
-        } catch (error ) {
-             console.log( error);
+        } catch (error) {
+            console.log(error);
         }
-     };
+    };
 
     useEffect(() => {
         message?.image && downloadImage(message.image)
         
        
     }, [message?.image])
-    const classes = useStyles();
+
+    const classes = useStyles(message);
     
     return (
         <Box className={classes.root} width="fit-content" display="flex" flexDirection="column">
              {
                 messageFile &&
-                <Box  style={{position: 'relative', width: 240, height: 280, marginTop: 7}}>
+                <Box  className={classes.image}>
                     <Image
                         src={messageFile}
                          
                         alt="msg"
                         layout="fill"
                         objectFit="cover"
-                        className={classes.image} />
+                        />
                 </Box>
             }
              <Box display="flex" width={messageFile && 240} flexWrap="wrap">
