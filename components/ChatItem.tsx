@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { makeStyles, withStyles,createStyles, Theme } from '@material-ui/core/styles';
-import { Avatar, Divider, List, ListItemAvatar, ListItemIcon, ListItemText,ListItem, Typography, ListItemSecondaryAction } from '@material-ui/core';
+import { Avatar, Divider, ListItemAvatar, ListItemIcon, ListItemText,ListItem, Typography, ListItemSecondaryAction } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { useStore, Chat } from '../lib/chatStore';
+import { useStore, Chat, Message, useChatMessagesStore } from '../lib/chatStore';
 import moment from 'moment';
 import { supabase } from '../lib/supabaseClient';
 
@@ -42,17 +42,32 @@ const useStyles = makeStyles<Theme, Boolean>(theme => createStyles({
 
 const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
     const [ishovered, setHoverState] = useState<boolean>(false);
+    const [message, setLastMessage] = useState<string | undefined>()
     const setCurrentChat = useStore(state => state.setCurrentChat);
     const currentChat = useStore(state => state.currentChat);
     const classes = useStyles(ishovered);
-    
-    
+    const chatMessages = useChatMessagesStore(state => state.chatMessages);
+    // Fetch the chat messages and get the last one 
     const sanitizeTime = (dateTime:  string) => {
 
         return moment(dateTime).calendar();
       }
       
-    
+    const getLastChatMessage = async () => {
+
+        const { data, error } = await supabase.from<Message>('messages').select('text').
+        eq('chatId', id).order('createdAt', { ascending: false }).limit(1).single();
+        data && setLastMessage(data.text);
+         
+    };
+
+    useEffect(() => {
+        getLastChatMessage();
+
+    }, [chatMessages]
+    )
+
+   // console.log(chatMessages);
     return (
         
                     <>
@@ -77,9 +92,9 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
                             <ListItemText
                                 primary={name}
                                 secondary={
-                                    <React.Fragment>
-                                        last messages here
-                                    </React.Fragment>
+                                    <Typography noWrap={true} style={{fontSize: 14,color: 'lightgray'}}>
+                                        {message}
+                                    </Typography>
                                 }
                                      />
                                                  

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Avatar, Box, Grid, Grow, makeStyles, Typography } from '@material-ui/core';
+import { Avatar, Grid, makeStyles, Typography } from '@material-ui/core';
 import React, { useState, useRef} from 'react'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MoodIcon from '@material-ui/icons/Mood';
@@ -8,7 +8,7 @@ import SendIcon from '@material-ui/icons/Send';
 import AttachFileSharpIcon from '@material-ui/icons/AttachFileSharp';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
-import { Message, useStore } from '../lib/chatStore';
+import { Message, useChatMessagesStore, useStore } from '../lib/chatStore';
 import SearchBar from "material-ui-search-bar";
 import IconButton from '@material-ui/core/IconButton';
 import SenderMessageBox from './SenderMessageBox';
@@ -18,9 +18,8 @@ import PersonIcon from '@material-ui/icons/Person';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import PanoramaIcon from '@material-ui/icons/Panorama';
-import { green } from '@material-ui/core/colors';
 import Fade from '@material-ui/core/Fade';
-import Fab from '@material-ui/core/Fab';
+
 
 
 
@@ -123,13 +122,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
 const  Chatarea = () => {
 
     const classes = useStyles();
     const currentChat = useStore(state => state.currentChat);
+    const chatMessages = useChatMessagesStore(state => state.chatMessages);
+    const updateChatMessages = useChatMessagesStore(state => state.updateChatMessages);
     const [message, setMessage] = useState<string>('');
-    const [currentChatMessages, updateCurrentChatMessages] = useState<Message[] | []>([]);
+   
     const user = supabase.auth.user();
     const [attachments, toggleAttachments] = useState<boolean>(false);
     const ref1 = useRef<HTMLInputElement>(null);
@@ -140,17 +140,17 @@ const  Chatarea = () => {
     const fetchCurrentChatMessages = async () => {
         const { data: messages } = await supabase.from<Message>('messages').select('*')
             .eq('chatId', currentChat?.id);
-        messages && updateCurrentChatMessages(messages)
+        messages && updateChatMessages(messages)
     };
   
-    // console.log(fileSelected);
+    
     React.useEffect(() => {
         fetchCurrentChatMessages();
         const mySubscription = supabase.from('messages')
             .on('INSERT', () => fetchCurrentChatMessages()).subscribe()
         return () => { supabase.removeSubscription(mySubscription)
     }
-    }, [currentChat, currentChatMessages]);
+    }, [currentChat, chatMessages]);
     
     const processFile = (): string => {
         //ONLY ALLOW IMAGE FILES FOR NOW !11
@@ -224,7 +224,7 @@ const  Chatarea = () => {
     
    
     const recordMessage = () => console.log('Make new voice note');
-   // console.log(currentChat.messages);
+   
     return (
 
         <div>
@@ -262,8 +262,8 @@ const  Chatarea = () => {
                 <Grid item container direction="column-reverse" alignItems="flex-end">
                     {
                         
-                        currentChatMessages.map((el) => {
-                            // return (
+                        chatMessages.map((el) => {
+                            
                           return  el.userId == user?.id ?
                             
                                 <Grid item key={el._id} style={{ marginTop: 17, marginRight: 'auto' }} >

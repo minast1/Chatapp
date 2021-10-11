@@ -26,10 +26,24 @@ const useStyles = makeStyles<Theme , Message>((theme) => ({
      image: {
         position: 'relative',
         width: 240,
-        height: 280,
+        height: 290,
         marginTop: 2,
 
-   }
+    },
+    time: {
+        fontSize: 13,
+        color: 'lightgray',
+        paddingTop: ({text, image}) => image && !text ? '2px':'10px',
+        paddingLeft: '25px',
+        marginLeft: 'auto',
+        //position: ({text, image}) => image && !text ? 'relative' : 'fixed',
+    
+    },
+    text: {
+        fontSize: 15,
+        fontWeight: 400,
+        color: 'lightgray'
+    }
 }));
 
 
@@ -75,9 +89,11 @@ function SenderMessageBox({ message }: { message: Message  }) {
             }
 
              <Box display="flex" width={messageFile && 240} flexWrap="wrap">
-                <Typography style={{ fontSize: 15, fontWeight: 400, color: 'lightgray' }}>{message?.text }</Typography>
-                <Typography style={{ fontSize: 13, color: 'lightgray', paddingTop: '10px', paddingLeft: '25px', marginLeft: 'auto' }}
-                >{sanitizeTime(message?.createdAt as string)} </Typography>
+                {
+                    message.text &&
+                    <Typography className={classes.text}>{message?.text}</Typography>
+                }
+              <Typography className={classes.time}>{sanitizeTime(message?.createdAt as string)} </Typography>
             </Box>
         </Box>
     )

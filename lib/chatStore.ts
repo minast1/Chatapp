@@ -1,6 +1,7 @@
 import produce from 'immer';
 import create from 'zustand';
 import { persist } from "zustand/middleware";
+import { supabase } from './supabaseClient';
 
 
 export type Chat = {
@@ -31,6 +32,13 @@ type CurrentChatState = {
   setCurrentChat: (chat: Chat) => void
 }
 
+
+
+type ChatMessagesState = {
+  chatMessages: Message[] | []
+  updateChatMessages: (messages: Message[]) => void
+}
+
 export const useStore = create<CurrentChatState>(persist(
     (set, get) => ({
         currentChat: null,
@@ -38,3 +46,8 @@ export const useStore = create<CurrentChatState>(persist(
   
     }), {name : "currentState"}));
 
+
+export const useChatMessagesStore = create<ChatMessagesState>((set) => ({
+  chatMessages: [],
+  updateChatMessages: (messages) => set(state => ({chatMessages : messages}))
+  }))

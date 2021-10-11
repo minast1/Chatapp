@@ -6,12 +6,14 @@ import Sidearea from '../components/Sidearea'
 import Welcome from '../components/Welcome'
 import { supabase } from '../lib/supabaseClient'
 import Chatarea from '../components/Chatarea';
-import { useStore, Chat } from '../lib/chatStore'
+import { useStore, Chat , Message} from '../lib/chatStore'
+import { useState } from 'react';
 
 function Home({userChats}: {userChats: Chat[]}) {
-     //console.log(userChats); 
+     
+  
   const currentChat = useStore(state => state.currentChat);
-    
+  
     return (
         
             <div style={{maxHeight: '100vh', overflow:'hidden'}}>
@@ -20,7 +22,7 @@ function Home({userChats}: {userChats: Chat[]}) {
             <Sidearea userChats={ userChats} />
                     </Grid>
                     <Grid item xs={8}>
-                       {currentChat ? <Chatarea /> : <Welcome/>}
+            {currentChat ? <Chatarea/> : <Welcome />}
                     </Grid>
                 </Grid>
             </div> 
