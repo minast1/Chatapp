@@ -6,6 +6,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useStore, Chat, Message, useChatMessagesStore } from '../lib/chatStore';
 import moment from 'moment';
 import { supabase } from '../lib/supabaseClient';
+import CameraAltIcon from '@material-ui/icons/CameraAlt';
 
 
 
@@ -42,22 +43,49 @@ const useStyles = makeStyles<Theme, Boolean>(theme => createStyles({
 
 const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
     const [ishovered, setHoverState] = useState<boolean>(false);
-    const [message, setLastMessage] = useState<string | undefined>()
+    const [textMessage, setLastMessageAsText] = useState<string | null>();
+    const [imageMessage, setLastMessageAsImage] = useState<boolean>(false);
+    const [lastMessageTime, setLastMessageTime] = useState<string>('')
     const setCurrentChat = useStore(state => state.setCurrentChat);
     const currentChat = useStore(state => state.currentChat);
     const classes = useStyles(ishovered);
     const chatMessages = useChatMessagesStore(state => state.chatMessages);
     // Fetch the chat messages and get the last one 
     const sanitizeTime = (dateTime:  string) => {
-
-        return moment(dateTime).calendar();
+        //const dt = new Date(dateTime);
+        return moment(dateTime).calendar(null,{
+    lastDay : '[Yesterday]',
+    sameDay : '[Today]',
+    nextDay : '[Tomorrow]',
+    lastWeek : '[last] dddd',
+    nextWeek : 'dddd',
+    sameElse : 'L'
+})
       }
       
     const getLastChatMessage = async () => {
 
         const { data, error } = await supabase.from<Message>('messages').select('text').
         eq('chatId', id).order('createdAt', { ascending: false }).limit(1).single();
-        data && setLastMessage(data.text);
+        //data && setLastMessage(data.text);
+        if (data) {
+           // const { text, image } = data;
+            if (data.text  && !data.image) { // text  message
+                setLastMessageAsText(data.text);
+                setLastMessageAsImage(false);
+            } else if(data.text && data.image){ //image with text message
+                setLastMessageAsImage(true);
+               setLastMessageAsText(data.text);
+            }
+            else if (!data.text && data.image ) { //image message
+                setLastMessageAsImage(true);
+                setLastMessageAsText(undefined);
+            }
+             
+             
+            setLastMessageTime(data.createdAt as string);
+           
+        }
          
     };
 
@@ -67,7 +95,7 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
     }, [chatMessages]
     )
 
-   // console.log(chatMessages);
+    //console.log(textMessage , imageMessage);
     return (
         
                     <>
@@ -93,14 +121,24 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
                                 primary={name}
                                 secondary={
                                     <Typography noWrap={true} style={{fontSize: 14,color: 'lightgray'}}>
-                                        {message}
+                                        {textMessage && imageMessage== false ? textMessage : imageMessage && !textMessage? 
+                                            <Typography style={{ display: 'flex', alignItems: 'center', fontSize: 14}}>
+                                                <CameraAltIcon fontSize="small" style={{marginRight: 4}} />
+                                                Photo
+                                            </Typography>
+                                            :   
+                                            <Typography style={{ display: 'flex', alignItems: 'center', fontSize: 14}}>
+                                                <CameraAltIcon fontSize="small" style={{marginRight: 4}} />
+                                                Photo
+                                                </Typography>
+                                        }
                                     </Typography>
                                 }
                                      />
                                                  
                             <ListItemIcon style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 <Typography variant='caption' style={{ color: 'darkgray' }}>
-                                    {sanitizeTime(createdAt)}
+                                    {sanitizeTime(lastMessageTime)}
                                  </Typography>
                                  <ListItemSecondaryAction style={{marginTop: 15}} className={classes.iconDisplay}>
                       <KeyboardArrowDownIcon fontSize="large" />
