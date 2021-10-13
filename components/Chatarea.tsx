@@ -60,12 +60,13 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: 10,
         paddingBottom: 20,
         backgroundSize: 'inherit',
-        height: theme.spacing(64),
+        //height: theme.spacing(63),
         [theme.breakpoints.down('md')]: {
-            height: theme.spacing(75)
+            height: theme.spacing(100)
         } /*increasee height based on breakpoint*/,
         flexGrow: 1,
-          maxHeight: '80vh',
+       
+          maxHeight: '100vh',
         overflow: 'auto',
     },
 
@@ -229,19 +230,19 @@ const  Chatarea = () => {
 
         <div>
             <Grid container  className={classes.root}>
-                <Grid item container alignItems='center' xs={12}>
-                    <Grid item container xs={11} spacing={7} alignItems="center"> {/*  Avatar and Name container*/}
+                <Grid item container alignItems='center' xs={12} justifyContent="space-between">
+                    <Grid item container xs={11} sm={8} spacing={7} alignItems="center"> {/*  Avatar and Name container*/}
                         <Grid item>
                          <Avatar src={currentChat?.photo} className={ classes.chatAvatar}/>
                         </Grid>
                         <Grid>
                         <Grid item direction="column"  container spacing={1} >
                         <Typography>{currentChat?.name}</Typography>
-                        <Typography>LastSeen 2days ago</Typography>
+                        <Typography noWrap={true}>LastSeen 2days ago</Typography>
                     </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item container xs>     {/**  Icons container */}
+                    <Grid item container xs sm={4}  justifyContent="flex-end">     {/**  Icons container */}
                         <Grid item >
                             <IconButton color="inherit"> 
                             <SearchIcon />
@@ -326,7 +327,7 @@ const  Chatarea = () => {
                
            
             <Grid container className={classes.bottomAppbar} alignItems="center">
-                <Grid item  style={{ paddingRight: 0}}>
+                <Grid item >
                     <IconButton  color="inherit" style={{ marginRight: 10}}>
                             <MoodIcon />
                     </IconButton>
@@ -341,7 +342,7 @@ const  Chatarea = () => {
                             <AttachFileSharpIcon />
                         </IconButton>
                   </Grid>
-                <Grid item xs={10} style={{paddingLeft:20, paddingRight: 15}}>
+                <Grid item xs={10} sm={8} style={{paddingLeft:20, paddingRight: 15}}>
                     <SearchBar
                          placeholder="Type a message"
                        // onRequestSearch={() => console.log('Searching...')}

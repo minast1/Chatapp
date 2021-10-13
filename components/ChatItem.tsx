@@ -28,15 +28,6 @@ const useStyles = makeStyles<Theme, Boolean>(theme => createStyles({
       height: theme.spacing(7),
     },
    
-     listItem: {
-       '& .Mui-focusVisible': {
-              // '&$iconDisplay': {
-                   display: 'none'
-                
-            //}
-        },
-    },
-   //iconDisplay: {display: 'flex'}
 }));
 
 
@@ -53,8 +44,8 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
     const chatMessages = useChatMessagesStore(state => state.chatMessages);
     // Fetch the chat messages and get the last one 
     const sanitizeTime = (dateTime: string) => {
-        //const dt = new Date(dateTime);
-        return moment(dateTime).calendar(null, {
+        const dt = moment(dateTime).toISOString() ;
+        return moment(dt).calendar('en', {
             lastDay: '[Yesterday]',
             sameDay: '[Today]',
             nextDay: '[Tomorrow]',
@@ -114,18 +105,15 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
                    alignItems="flex-start"
                   onMouseEnter={showDropDown}
                    onMouseLeave={hideDropDown}
-                     className={classes.listItem}
                      button
                 selected={currentChat?.id === id}
                       onClick={(event) => {
-                     // handleListItemClick(event, 0)
                     setCurrentChat({
                         id: id,
                         name: name,
                         photo: photo,
                         createdAt: createdAt,
                     })}}
-                     //selected={false/*selectedIndex === el.id*/}
                     >
                             <ListItemAvatar> 
                             <Avatar alt="Remy Sharp" className={classes.chatAvatar} src={photo } />
@@ -135,22 +123,22 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
                                 secondary={
                                     <Typography noWrap={true} style={{fontSize: 14,color: 'lightgray'}}>
                                         {textMessage && imageMessage== false ? textMessage : imageMessage && !textMessage? 
-                                            <Typography style={{ display: 'flex', alignItems: 'center', fontSize: 14}}>
+                                            <span style={{ display: 'flex', alignItems: 'center', fontSize: 14}}>
                                                 <CameraAltIcon fontSize="small" style={{marginRight: 4}} />
                                                 Photo
-                                            </Typography>
+                                            </span>
                                             :   
-                                            <Typography style={{ display: 'flex', alignItems: 'center', fontSize: 14}}>
+                                            <span style={{ display: 'flex', alignItems: 'center', fontSize: 14}}>
                                                 <CameraAltIcon fontSize="small" style={{marginRight: 4}} />
                                                 Photo
-                                                </Typography>
+                                                </span>
                                         }
                                     </Typography>
                                 }
                                      />
                                                  
                             <ListItemIcon style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <Typography variant='caption' style={{ color: 'darkgray' }}>
+                                <Typography noWrap={true} variant='caption' style={{ color: 'darkgray' }}>
                                     {sanitizeTime(lastMessageTime)}
                     </Typography>
                     {

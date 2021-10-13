@@ -16,7 +16,7 @@ function Home({userChats}: {userChats: Chat[]}) {
   
     return (
         
-            <div style={{maxHeight: '100vh', overflow:'hidden'}}>
+            <div style={{height: '100vh' , overflow: 'hidden'}}>
                 <Grid container direction="row">
                     <Grid item xs={4}>
             <Sidearea userChats={ userChats} />
