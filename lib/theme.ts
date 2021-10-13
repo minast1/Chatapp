@@ -57,7 +57,7 @@ const theme = createTheme({
       
         MuiListItemSecondaryAction: {
             root: {
-                display: 'none',
+                 //display: 'none',
                 color: 'gray'
                 /*'&:hover': {
                     display: 'flex'

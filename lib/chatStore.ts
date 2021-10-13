@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { SyntheticEvent } from 'react';
 import create from 'zustand';
 import { persist } from "zustand/middleware";
 import { supabase } from './supabaseClient';

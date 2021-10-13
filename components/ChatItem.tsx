@@ -29,14 +29,14 @@ const useStyles = makeStyles<Theme, Boolean>(theme => createStyles({
     },
    
      listItem: {
-        '& .Mui-focusVisible': {
-                '&$iconDisplay': {
-                    display: 'none'
+       '& .Mui-focusVisible': {
+              // '&$iconDisplay': {
+                   display: 'none'
                 
-            }
+            //}
         },
     },
-   iconDisplay: {}
+   //iconDisplay: {display: 'flex'}
 }));
 
 
@@ -48,21 +48,32 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
     const [lastMessageTime, setLastMessageTime] = useState<string>('')
     const setCurrentChat = useStore(state => state.setCurrentChat);
     const currentChat = useStore(state => state.currentChat);
+    let DropDownTimeout: ReturnType<typeof setTimeout>;
     const classes = useStyles(ishovered);
     const chatMessages = useChatMessagesStore(state => state.chatMessages);
     // Fetch the chat messages and get the last one 
-    const sanitizeTime = (dateTime:  string) => {
+    const sanitizeTime = (dateTime: string) => {
         //const dt = new Date(dateTime);
-        return moment(dateTime).calendar(null,{
-    lastDay : '[Yesterday]',
-    sameDay : '[Today]',
-    nextDay : '[Tomorrow]',
-    lastWeek : '[last] dddd',
-    nextWeek : 'dddd',
-    sameElse : 'L'
-})
-      }
-      
+        return moment(dateTime).calendar(null, {
+            lastDay: '[Yesterday]',
+            sameDay: '[Today]',
+            nextDay: '[Tomorrow]',
+            lastWeek: '[last] dddd',
+            nextWeek: 'dddd',
+            sameElse: 'L'
+        })
+    };
+
+    const showDropDown = (): void => {
+        DropDownTimeout = setTimeout(() => {
+            setHoverState(true);
+        }, 5)
+    };
+    
+     const hideDropDown = (): void => {
+         setHoverState(false);
+         clearTimeout(DropDownTimeout);
+    };
     const getLastChatMessage = async () => {
 
         const { data, error } = await supabase.from<Message>('messages').select('text').
@@ -100,10 +111,12 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
         
                     <>
                     <ListItem  
-                     alignItems="flex-start"
-                    className={classes.listItem}
+                   alignItems="flex-start"
+                  onMouseEnter={showDropDown}
+                   onMouseLeave={hideDropDown}
+                     className={classes.listItem}
                      button
-                     selected={currentChat?.id === id}
+                selected={currentChat?.id === id}
                       onClick={(event) => {
                      // handleListItemClick(event, 0)
                     setCurrentChat({
@@ -139,10 +152,14 @@ const ChatItem = ({ id, name, photo, createdAt}: Chat ) => {
                             <ListItemIcon style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 <Typography variant='caption' style={{ color: 'darkgray' }}>
                                     {sanitizeTime(lastMessageTime)}
-                                 </Typography>
-                                 <ListItemSecondaryAction style={{marginTop: 15}} className={classes.iconDisplay}>
+                    </Typography>
+                    {
+                        ishovered &&
+                           <ListItemSecondaryAction style={{marginTop: 14}}>
                       <KeyboardArrowDownIcon fontSize="large" />
                           </ListItemSecondaryAction>
+                    }
+                              
                           </ListItemIcon>
               
                         </ListItem>
