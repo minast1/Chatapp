@@ -60,13 +60,13 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: 10,
         paddingBottom: 20,
         backgroundSize: 'inherit',
-        //height: theme.spacing(63),
+        height: theme.spacing(64),
         [theme.breakpoints.down('md')]: {
             height: theme.spacing(100)
         } /*increasee height based on breakpoint*/,
         flexGrow: 1,
        
-          maxHeight: '100vh',
+         // maxHeight: '80%',
         overflow: 'auto',
     },
 

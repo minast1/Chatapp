@@ -62,9 +62,10 @@ function SenderMessageBox({ message }: { message: Message  }) {
         try {
             const { data, error } = await supabase.storage.from('message-files').download(path);
             if (error) { throw error }
-            const url = URL.createObjectURL(data);
-            setMessageFile(url);
-
+            if (data) {
+                const url = URL.createObjectURL(data);
+                setMessageFile(url);
+            }
         } catch (error ) {
              console.log( error);
         }
