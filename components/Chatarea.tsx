@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
     searchChat: {
         padding: '4px',
-
+         //width: 650 ,
         marginTop: theme.spacing(1),
         display: 'flex',
         alignItems: 'center',
@@ -327,8 +327,8 @@ const  Chatarea = () => {
                
            
             <Grid container className={classes.bottomAppbar} alignItems="center">
-                <Grid item >
-                    <IconButton  color="inherit" style={{ marginRight: 10}}>
+                <Grid item xs={4} sm={3} md={2} >
+                    <IconButton  color="inherit" style={{ marginRight: 3}}>
                             <MoodIcon />
                     </IconButton>
                      <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
@@ -342,7 +342,7 @@ const  Chatarea = () => {
                             <AttachFileSharpIcon />
                         </IconButton>
                   </Grid>
-                <Grid item xs={10} sm={8} style={{paddingLeft:20, paddingRight: 15}}>
+                <Grid item xs={4} sm={7} md={9} >
                     <SearchBar
                          placeholder="Type a message"
                        // onRequestSearch={() => console.log('Searching...')}
@@ -354,8 +354,7 @@ const  Chatarea = () => {
                         className={classes.searchChat}
                     />
                 </Grid>
-                <Grid item xs container justifyContent='center'>
-                   <Grid item>
+                <Grid item xs >
                         <IconButton
                             color="inherit"
                             onClick={(event) => {
@@ -364,7 +363,6 @@ const  Chatarea = () => {
                             } }>
                             {message.length > 0 || fileSelected ? <SendIcon /> : <MicIcon />}
                         </IconButton>
-                   </Grid>
                 </Grid>
             </Grid>
            
