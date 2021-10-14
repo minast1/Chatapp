@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Grid, Box, Typography, Theme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
@@ -67,14 +68,14 @@ function RecieverMessageBox({ message }: { message: Message }) {
         <Box className={classes.root} width="fit-content" display="flex" flexDirection="column">
              {
                 messageFile &&
-                <Box  className={classes.image}>
-                    <Image
+                <Box>
+                     <img
                         src={messageFile}
-                         
                         alt="msg"
-                        layout="fill"
-                        objectFit="cover"
-                        />
+                        className={classes.image}
+                        //layout="fill"
+                       // objectFit="cover"
+                     />
                 </Box>
             }
              <Box display="flex" width={messageFile && 240} flexWrap="wrap">

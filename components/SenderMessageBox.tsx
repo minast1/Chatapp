@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Grid, Box, Typography, Theme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
+//import Image from 'next/image'
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Message } from '../lib/chatStore';
 import { DateTime } from 'luxon';
@@ -24,9 +25,9 @@ const useStyles = makeStyles<Theme , Message>((theme) => ({
         
     },
      image: {
-        position: 'relative',
-        width: 240,
-        height: 290,
+       // position: 'relative',
+        width: 240 ,   //240,
+        height: 290,   //290,
         marginTop: 2,
 
     },
@@ -78,12 +79,13 @@ function SenderMessageBox({ message }: { message: Message  }) {
         <Box className={classes.root} width="fit-content" display="flex" flexDirection="column">
             {
                 messageFile &&
-                <Box className={classes.image}>
-                    <Image
+                <Box>
+                    <img
                         src={messageFile}
                         alt="msg"
-                        layout="fill"
-                        objectFit="cover"
+                        className={classes.image}
+                        //layout="fill"
+                       // objectFit="cover"
                      />
                 </Box>
             }
