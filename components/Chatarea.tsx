@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundSize: 'inherit',
         height: theme.spacing(64),
         [theme.breakpoints.down('md')]: {
-            height: theme.spacing(100)
+            height: theme.spacing(59)
         } /*increasee height based on breakpoint*/,
         flexGrow: 1,
        
