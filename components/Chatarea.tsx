@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Avatar, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Avatar, Container, CssBaseline, Grid, makeStyles, Typography } from '@material-ui/core';
 import React, { useState, useRef} from 'react'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MoodIcon from '@material-ui/icons/Mood';
@@ -19,6 +19,7 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import PanoramaIcon from '@material-ui/icons/Panorama';
 import Fade from '@material-ui/core/Fade';
+import Header from './Header';
 
 
 
@@ -31,10 +32,16 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: 20,
         
     },
+
+    mainroot: {
+         display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    },
     fab: {
         position: 'fixed',
         bottom: theme.spacing(10),
-        paddingLeft: 70
+        paddingLeft: 53
        // right: theme.spacing(2),
     },
 
@@ -46,7 +53,8 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         height: 45,
         borderRadius: '30px',
-        flexGrow: 1,
+        //marginRight: 10,
+       // marginLeft: 10 ,
         backgroundColor: theme.palette.primary.main
     },
     iconButton: {
@@ -58,13 +66,13 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: 80,
         paddingRight: 70,
         paddingTop: 10,
-        paddingBottom: 20,
+       paddingBottom: 20,
         backgroundSize: 'inherit',
-        height: theme.spacing(64),
+        height: theme.spacing(63),
         [theme.breakpoints.down('md')]: {
-            height: theme.spacing(59)
+            height: theme.spacing(58)
         } /*increasee height based on breakpoint*/,
-        flexGrow: 1,
+        //flexGrow: 1,
        
          // maxHeight: '80%',
         overflow: 'auto',
@@ -119,7 +127,17 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(7),
         height: theme.spacing(7),
       border: 0
-    }
+    },
+    footer: {
+     paddingTop: 5,
+     marginTop: 'auto',
+        backgroundColor: '#101318',
+       height : 70
+    },
+     main: {
+   // marginTop: theme.spacing(8),
+   // marginBottom: theme.spacing(2),
+  },
 }));
 
 
@@ -228,39 +246,13 @@ const  Chatarea = () => {
    
     return (
 
-        <div>
-            <Grid container  className={classes.root}>
-                <Grid item container alignItems='center' xs={12} justifyContent="space-between">
-                    <Grid item container xs={11} sm={8} spacing={7} alignItems="center"> {/*  Avatar and Name container*/}
-                        <Grid item>
-                         <Avatar src={currentChat?.photo} className={ classes.chatAvatar}/>
-                        </Grid>
-                        <Grid>
-                        <Grid item direction="column"  container spacing={1} >
-                        <Typography>{currentChat?.name}</Typography>
-                        <Typography noWrap={true}>LastSeen 2days ago</Typography>
-                    </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item container xs sm={4}  justifyContent="flex-end">     {/**  Icons container */}
-                        <Grid item >
-                            <IconButton color="inherit"> 
-                            <SearchIcon />
-                        </IconButton>
-                        </Grid>
-                        <Grid item >
-
-                            <IconButton aria-label="display more actions" color="inherit">
-                            <MoreVertIcon />
-                        </IconButton>
-                        </Grid>
-                      </Grid>
-                   
-                </Grid>
-                 
-            </Grid>
-            <Grid  container  className={classes.messages_area}>    {/** Messages area */}
-                <Grid item container direction="column-reverse" alignItems="flex-end">
+        <div className={classes.mainroot}>
+      <CssBaseline /> 
+      <Container component="main" className={classes.main} maxWidth={false} disableGutters>
+          <Header/>
+           
+             <Grid item container className={classes.messages_area}>    {/** Messages area */}
+                <Grid item container direction="column-reverse" alignItems="flex-end" xs>
                     {
                         
                         chatMessages.map((el) => {
@@ -276,9 +268,54 @@ const  Chatarea = () => {
                         })
                     }
                     
+                    </Grid>
+                
                 </Grid>
-            </Grid>
-            <Fade in={attachments}>
+                
+      </Container>
+      <footer className={classes.footer}>
+        <Container maxWidth={false} disableGutters={true} >
+            <Grid  container  alignItems="center" spacing={1}>
+                <Grid item >
+                    <IconButton  color="inherit">
+                            <MoodIcon />
+                    </IconButton>
+                  </Grid>
+                        <Grid item>
+                    <IconButton
+                        onClick={() => toggleAttachments(!attachments)}
+                            color="inherit"
+                            
+                            aria-label="upload picture"
+                            component="span">
+                            <AttachFileSharpIcon />
+                        </IconButton>
+                  </Grid>
+                <Grid item style={{flexGrow : 1}}>
+                    <SearchBar
+                         placeholder="Type a message"
+                       // onRequestSearch={() => console.log('Searching...')}
+                        closeIcon={<ClearIcon style={{ display: 'none', opacity: 0 }} />}
+                        searchIcon={<SearchIcon style={{ display: 'none' , opacity: 0 }}/>}
+                        onChange={(newValue) => setMessage(newValue)}
+                        value={message}
+                        
+                        className={classes.searchChat}
+                    />
+                </Grid>
+                <Grid item >
+                        <IconButton
+                            color="inherit"
+                            onClick={(event) => {
+                                event.preventDefault();
+                                message.length > 0 || fileSelected ? sendMessge() : recordMessage()
+                            } }>
+                            {message.length > 0 || fileSelected ? <SendIcon /> : <MicIcon />}
+                        </IconButton>
+                </Grid>
+                    </Grid>
+                    
+                      <Fade in={attachments}>
                 
                 <Grid container direction="column" className={classes.fab} spacing={2} >
                  <input
@@ -324,49 +361,10 @@ const  Chatarea = () => {
                 </Grid> 
                 </Grid>
                 </Fade>
-               
-           
-            <Grid container className={classes.bottomAppbar} alignItems="center">
-                <Grid item xs={4} sm={3} md={2} >
-                    <IconButton  color="inherit" style={{ marginRight: 3}}>
-                            <MoodIcon />
-                    </IconButton>
-                     <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
-                    
-                    <IconButton
-                        onClick={() => toggleAttachments(!attachments)}
-                            color="inherit"
-                            edge="end"
-                            aria-label="upload picture"
-                            component="span">
-                            <AttachFileSharpIcon />
-                        </IconButton>
-                  </Grid>
-                <Grid item xs={4} sm={7} md={9} >
-                    <SearchBar
-                         placeholder="Type a message"
-                       // onRequestSearch={() => console.log('Searching...')}
-                        closeIcon={<ClearIcon style={{ display: 'none', opacity: 0 }} />}
-                        searchIcon={<SearchIcon style={{ display: 'none' , opacity: 0 }}/>}
-                        onChange={(newValue) => setMessage(newValue)}
-                        value={message}
-                        
-                        className={classes.searchChat}
-                    />
-                </Grid>
-                <Grid item xs >
-                        <IconButton
-                            color="inherit"
-                            onClick={(event) => {
-                                event.preventDefault();
-                                message.length > 0 || fileSelected ? sendMessge() : recordMessage()
-                            } }>
-                            {message.length > 0 || fileSelected ? <SendIcon /> : <MicIcon />}
-                        </IconButton>
-                </Grid>
-            </Grid>
-           
-        </div>
+        </Container>
+      </footer>
+         <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
+    </div>
     )
 }
 
