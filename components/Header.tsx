@@ -45,7 +45,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Header() {
+
+type HeaderProps = {
+  src?: string | Blob 
+  name?: string
+}
+
+export default function Header({src, name} : HeaderProps) {
   const classes = useStyles();
 
   return (
@@ -53,11 +59,11 @@ export default function Header() {
                 <Grid item container alignItems='center' xs={12} justifyContent="space-between">
                     <Grid item container xs={11} sm={8} spacing={7} alignItems="center"> {/*  Avatar and Name container*/}
                         <Grid item>
-                         <Avatar src={'img'/*currentChat?.photo*/} className={ classes.chatAvatar}/>
+                         <Avatar src={src as string} className={ classes.chatAvatar}/>
                         </Grid>
                         <Grid>
                         <Grid item direction="column"  container spacing={1} >
-                        <Typography>{'Lukatoni'/*currentChat?.name*/}</Typography>
+                        <Typography>{name}</Typography>
                         <Typography noWrap={true}>LastSeen 2days ago</Typography>
                     </Grid>
                         </Grid>

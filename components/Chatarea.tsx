@@ -249,7 +249,7 @@ const  Chatarea = () => {
         <div className={classes.mainroot}>
       <CssBaseline /> 
       <Container component="main" className={classes.main} maxWidth={false} disableGutters>
-          <Header/>
+                <Header src={currentChat?.photo} name={ currentChat?.name}/>
            
              <Grid item container className={classes.messages_area}>    {/** Messages area */}
                 <Grid item container direction="column-reverse" alignItems="flex-end" xs>
