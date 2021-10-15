@@ -66,11 +66,13 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: 80,
         paddingRight: 70,
         paddingTop: 10,
-       paddingBottom: 20,
-        backgroundSize: 'inherit',
-        height: theme.spacing(63),
+        paddingBottom: 20,
+       backgroundRepeat: 'repeat',
+        backgroundSize: 'auto',
+        height:  theme.spacing(63),
         [theme.breakpoints.down('md')]: {
-            height: theme.spacing(58)
+           height: theme.spacing(53),
+            backgroundRepeat: 'repeat-y'
         } /*increasee height based on breakpoint*/,
         //flexGrow: 1,
        
