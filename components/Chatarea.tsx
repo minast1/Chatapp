@@ -80,46 +80,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
   },
 
-<<<<<<< HEAD
   input: {
     display: "none",
   },
-=======
-    searchChat: {
-        padding: '4px',
-         //width: 650 ,
-        marginTop: theme.spacing(1),
-        display: 'flex',
-        alignItems: 'center',
-        height: 45,
-        borderRadius: '30px',
-        //marginRight: 10,
-       // marginLeft: 10 ,
-        backgroundColor: theme.palette.primary.main
-    },
-    iconButton: {
-        padding: 10,
-    },
-    messages_area: {
-        borderLeft: '1px solid #272c35',
-        backgroundImage: 'url(/wa_bg.png)',
-        paddingLeft: 80,
-        paddingRight: 70,
-        paddingTop: 10,
-        paddingBottom: 20,
-       backgroundRepeat: 'repeat',
-        backgroundSize: 'auto',
-        height:  theme.spacing(63),
-        [theme.breakpoints.down('md')]: {
-           height: theme.spacing(53),
-            backgroundRepeat: 'repeat-y'
-        } /*increasee height based on breakpoint*/,
-        //flexGrow: 1,
-       
-         // maxHeight: '80%',
-        overflow: 'auto',
-    },
->>>>>>> 273c22f7a4901f9770ee01a101e60e07cccaae40
 
   chatAvatar: {
     width: theme.spacing(7.0),
