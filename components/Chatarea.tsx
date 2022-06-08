@@ -27,6 +27,7 @@ import CameraAltIcon from "@material-ui/icons/CameraAlt";
 import PanoramaIcon from "@material-ui/icons/Panorama";
 import Fade from "@material-ui/core/Fade";
 import Header from "./Header";
+import shallow from "zustand/shallow";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -145,7 +146,10 @@ const useStyles = makeStyles((theme) => ({
 const Chatarea = () => {
   const classes = useStyles();
   const currentChat = useStore((state) => state.currentChat);
-  const chatMessages = useChatMessagesStore((state) => state.chatMessages);
+  const chatMessages = useChatMessagesStore(
+    (state) => state.chatMessages,
+    shallow
+  );
   const updateChatMessages = useChatMessagesStore(
     (state) => state.updateChatMessages
   );
