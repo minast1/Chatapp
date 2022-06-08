@@ -179,7 +179,7 @@ const Chatarea = () => {
     return () => {
       supabase.removeSubscription(mySubscription);
     };
-  }, [currentChat?.id]);
+  }, [currentChat]);
 
   const processFile = (): string => {
     //ONLY ALLOW IMAGE FILES FOR NOW !11
