@@ -1,8 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a Watsapp Desktop Clone built with [Next.js](https://nextjs.org/) [MaterialUi](https://Mui.com)
+and [Supabase](https://supabase.com)
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies
+yarn install or npm install
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -11,8 +15,13 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+OR
+Check out demo at [https://chatapp-ivory.vercel.app/](https://chatapp-ivory.vercel.app/)
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+You can Login with the credentials
+Email: `user@gmail.com`
+password: `password`
+Or Register as a new user
 
 [API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
